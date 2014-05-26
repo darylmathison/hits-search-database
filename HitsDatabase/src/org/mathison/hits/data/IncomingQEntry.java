@@ -16,6 +16,7 @@ import java.io.IOException;
  * @author Daryl
  */
 public class IncomingQEntry implements DataSerializable {
+    private static final long serialVersionUID = 1L;
     private long queryId;
     private String query;
     private long nodeId = -1;
@@ -55,12 +56,18 @@ public class IncomingQEntry implements DataSerializable {
 
     @Override
     public void writeData(ObjectDataOutput odo) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        odo.writeLong(queryId);
+        odo.writeUTF(query);
+        odo.writeLong(nodeId);
+        odo.writeUTF(URI);
     }
 
     @Override
     public void readData(ObjectDataInput odi) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        queryId = odi.readLong();
+        query = odi.readUTF();
+        nodeId = odi.readLong();
+        URI = odi.readUTF();
     }
     
 }

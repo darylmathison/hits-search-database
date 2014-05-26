@@ -16,12 +16,21 @@ import java.io.IOException;
  * @author Daryl
  */
 public class OutgoingQEntry implements DataSerializable {
+    private static final long serialVersionUID = 1L;
+    
     private String query;
     private long queryId;
     private long nodeId = -1;
     private String URI;
     private int level;
-
+    private int maxLevel;
+    
+    private OutgoingQEntry() {}
+    
+    public OutgoingQEntry(int maxLevel) {
+        this.maxLevel = maxLevel;
+    }
+    
     public String getQuery() {
         return query;
     }
@@ -62,13 +71,26 @@ public class OutgoingQEntry implements DataSerializable {
         this.level = level;
     }
 
+    public int getMaxLevel() {
+        return maxLevel;
+    }
+    
     @Override
     public void writeData(ObjectDataOutput odo) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        odo.writeUTF(query);
+        odo.writeLong(queryId);
+        odo.writeLong(nodeId);
+        odo.writeUTF(URI);
+        odo.writeInt(level);
+        odo.writeInt(maxLevel);
     }
 
     @Override
     public void readData(ObjectDataInput odi) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+        query = odi.readUTF();
+        queryId = odi.readLong();
+        nodeId = odi.readLong();
+        URI = odi.readUTF();
+        level = odi.readInt();
+        maxLevel = odi.readInt();    }
 }
