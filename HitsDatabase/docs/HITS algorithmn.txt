@@ -1,0 +1,72 @@
+Stage 1 - Starting the process
+1> Query entry is initialized and put into query map.
+1> Queries Google and retrieves n entries
+2> Entries are put onto Stage 2 q.
+
+Query entry
+- Query
+- Query ID
+- New - T/F
+- Node Count
+- Answer
+
+Stage 2 - Making Outgoing Nodes
+1> Checks Query entry, If Node Count is greater than zero and New is T, change it to F.
+2> Increment Node Count.
+3> Extract n URIs.
+4> Tries to find existing Nodes based on QueryID and URI.  If an existing Node is found, then record 
+   current NodeId as an incoming Node for the found Node and record the found NodeId as an outgoing 
+   for current Node.  If current node level is < n and no nodes exist for URI and QueryID exist, then
+   a new node is created with a level one greater than current node is created and put on Stage 2 q.
+5> Current Node is put onto Stage 3 q.
+
+Stage 2 Entry
+- Query
+- QueryID
+- URI
+- Level
+- NodeId
+
+Stage 3 - Incoming Links
+1> Google is queried for n incoming links for current URI entry.
+2> Map is queried for existing nodes with QueryID and URI.  If node is found, the node id is entered as
+   a an incoming link and the current node id is recorded as an outgoing link on the found node.  
+   If no existing node exists, a new node is created, the current node id is recorded
+   as an outgoing link and the new node is put into the map.
+3> Decrement node count in Query entry.
+
+Stage 3 entry
+- Query
+- QueryID
+- NodeId
+- URI
+
+Map Node
+- Query
+- QueryID
+- NodeId
+- Hub Score
+- Authority Score
+- Set of Outgoing node ids
+- Set of incoming node ids
+
+Gathering process is finished when New is F and node count == 0.
+
+------------------------------
+Calculating Scores
+
+Refer to Wikipedia puedocode.
+
+Bring out Nodes via QueryID.
+Sort according to Authority Score.
+Send Answer entry into callback.
+
+Answer structure
+- Sorted Set of Node Entries
+- Query
+- QueryID
+
+--------------------------------------
+1> Client logs in
+2> When a query comes in, the query is passed to a Future.
+3> client waits on the results of the future.
