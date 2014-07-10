@@ -8,6 +8,7 @@ package org.mathison.hits.dto;
 
 import java.io.Serializable;
 import java.util.SortedSet;
+import org.mathison.hits.key.QueryRequestKey;
 
 /**
  *
@@ -17,7 +18,7 @@ public class SearchAnswer implements Serializable {
     private static final long serialVersionUID = 1L;
     
     private String query;
-    private Long queryId;
+    private QueryRequestKey queryId;
     private SortedSet<LinkEntry> items;
 
     public String getQuery() {
@@ -28,11 +29,11 @@ public class SearchAnswer implements Serializable {
         this.query = query;
     }
 
-    public Long getQueryId() {
+    public QueryRequestKey getQueryId() {
         return queryId;
     }
 
-    public void setQueryId(Long queryId) {
+    public void setQueryId(QueryRequestKey queryId) {
         this.queryId = queryId;
     }
 

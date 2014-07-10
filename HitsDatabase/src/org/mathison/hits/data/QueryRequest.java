@@ -14,6 +14,7 @@ import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.nio.serialization.DataSerializable;
 import java.io.IOException;
+import org.mathison.hits.key.QueryRequestKey;
 
 /**
  *
@@ -24,18 +25,18 @@ public class QueryRequest implements DataSerializable, HazelcastInstanceAware {
     
     private transient HazelcastInstance hInstance;
     
-    private long id = -1;
+    private QueryRequestKey id = null;
     private String query;
     private int numOfLinksToReturn;
-    private boolean notStarted = false;
+    private boolean started = false;
     private IAtomicLong nodeCount;
     private SearchAnswer answer;
     
-    public Long getId() {
+    public QueryRequestKey getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(QueryRequestKey id) {
         this.id = id;
     }
 
@@ -47,12 +48,12 @@ public class QueryRequest implements DataSerializable, HazelcastInstanceAware {
         this.query = query;
     }
 
-    public boolean isNotStarted() {
-        return notStarted;
+    public boolean isStarted() {
+        return started;
     }
 
-    public void setNotStarted(boolean notStarted) {
-        this.notStarted = notStarted;
+    public void setStarted(boolean started) {
+        this.started = started;
     }
 
     public long getNodeCount() {
@@ -75,15 +76,11 @@ public class QueryRequest implements DataSerializable, HazelcastInstanceAware {
         this.answer = answer;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public int getNumOfLinksToReturn() {
         return numOfLinksToReturn;
     }
 
-    public void setNumOfLinksReturned(int numOfLinksToReturn) {
+    public void setNumOfLinksToReturn(int numOfLinksToReturn) {
         this.numOfLinksToReturn = numOfLinksToReturn;
     }
 
@@ -98,10 +95,10 @@ public class QueryRequest implements DataSerializable, HazelcastInstanceAware {
 
     @Override
     public void writeData(ObjectDataOutput odo) throws IOException {
-        odo.writeLong(id);
+        odo.writeObject(id);
         odo.writeUTF(query);
         odo.writeInt(numOfLinksToReturn);
-        odo.writeBoolean(notStarted);
+        odo.writeBoolean(started);
         odo.writeUTF(nodeCount.getName());
         odo.writeLong(nodeCount.get());
         odo.writeObject(answer);
@@ -110,10 +107,10 @@ public class QueryRequest implements DataSerializable, HazelcastInstanceAware {
     @Override
     public void readData(ObjectDataInput odi) throws IOException {
         String nodeCountName;
-        id = odi.readLong();
+        id = odi.readObject();
         query = odi.readUTF();
         numOfLinksToReturn = odi.readInt();
-        notStarted = odi.readBoolean();
+        started = odi.readBoolean();
         nodeCountName = odi.readUTF();
         nodeCount = hInstance.getAtomicLong(nodeCountName);
         nodeCount.set(odi.readLong());

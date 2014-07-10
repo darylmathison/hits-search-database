@@ -16,7 +16,7 @@ public class ClientRequest implements Serializable {
     private static final long serialVersionUID = 1L;
     
     private String query;
-    private int numOfLinksReturned;
+    private int numOfLinksToReturn;
 
     public String getQuery() {
         return query;
@@ -26,12 +26,12 @@ public class ClientRequest implements Serializable {
         this.query = query;
     }
 
-    public int getNumOfLinksReturned() {
-        return numOfLinksReturned;
+    public int getNumOfLinksToReturn() {
+        return numOfLinksToReturn;
     }
 
-    public void setNumOfLinksReturned(int numOfLinksReturned) {
-        this.numOfLinksReturned = numOfLinksReturned;
+    public void setNumOfLinksToReturn(int numOfLinksToReturn) {
+        this.numOfLinksToReturn = numOfLinksToReturn;
     }
     
 }

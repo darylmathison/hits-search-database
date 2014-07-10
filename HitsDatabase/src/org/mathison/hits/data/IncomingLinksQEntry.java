@@ -10,41 +10,33 @@ import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.nio.serialization.DataSerializable;
 import java.io.IOException;
+import org.mathison.hits.key.QueryRequestKey;
 
 /**
  *
  * @author Daryl
  */
-public class OutgoingQEntry implements DataSerializable {
+public class IncomingLinksQEntry implements DataSerializable {
     private static final long serialVersionUID = 1L;
-    
+    private QueryRequestKey queryId;
     private String query;
-    private long queryId;
     private long nodeId = -1;
     private String URI;
-    private int level;
-    private int maxLevel;
-    
-    private OutgoingQEntry() {}
-    
-    public OutgoingQEntry(int maxLevel) {
-        this.maxLevel = maxLevel;
+
+    public QueryRequestKey getQueryId() {
+        return queryId;
     }
-    
+
+    public void setQueryId(QueryRequestKey queryId) {
+        this.queryId = queryId;
+    }
+
     public String getQuery() {
         return query;
     }
 
     public void setQuery(String query) {
         this.query = query;
-    }
-
-    public long getQueryId() {
-        return queryId;
-    }
-
-    public void setQueryId(long queryId) {
-        this.queryId = queryId;
     }
 
     public long getNodeId() {
@@ -63,34 +55,20 @@ public class OutgoingQEntry implements DataSerializable {
         this.URI = URI;
     }
 
-    public int getLevel() {
-        return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
-    public int getMaxLevel() {
-        return maxLevel;
-    }
-    
     @Override
     public void writeData(ObjectDataOutput odo) throws IOException {
+        odo.writeObject(queryId);
         odo.writeUTF(query);
-        odo.writeLong(queryId);
         odo.writeLong(nodeId);
         odo.writeUTF(URI);
-        odo.writeInt(level);
-        odo.writeInt(maxLevel);
     }
 
     @Override
     public void readData(ObjectDataInput odi) throws IOException {
+        queryId = odi.readObject();
         query = odi.readUTF();
-        queryId = odi.readLong();
         nodeId = odi.readLong();
         URI = odi.readUTF();
-        level = odi.readInt();
-        maxLevel = odi.readInt();    }
+    }
+    
 }

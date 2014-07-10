@@ -10,31 +10,30 @@ import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.nio.serialization.DataSerializable;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
+import org.mathison.hits.key.NodeMapKey;
 
 /**
  *
  * @author Daryl
  */
-public class MapNode implements DataSerializable {
+public class NodeMapEntry implements DataSerializable {
     static final long serialVersionUID = 1L;
     
-    private long id = -1;
+    private NodeMapKey id = null;
     private String query;
     private String URI;
     private long queryId;
     private float hubScore;
     private float authScore;
-    private Set<Long> outgoing;
-    private Set<Long> incoming;
+    private Set<NodeMapKey> outgoing;
+    private Set<NodeMapKey> incoming;
 
-    public Long getId() {
+    public NodeMapKey getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(NodeMapKey id) {
         this.id = id;
     }
 
@@ -54,16 +53,13 @@ public class MapNode implements DataSerializable {
         this.queryId = queryId;
     }
     
-    public void addOutgoing(Long nodeId) {
-        if(!outgoing.contains(nodeId)) {
-            outgoing.add(nodeId);
-        }
+    public void addOutgoing(NodeMapKey nodeId) {
+        outgoing.add(nodeId);
     }
     
-    public void addIncoming(Long nodeId) {
-        if(!incoming.contains(nodeId)) {
-            incoming.add(nodeId);
-        }
+    public void addIncoming(NodeMapKey nodeId) {
+        incoming.add(nodeId);
+
     }
 
     public float getHubScore() {
@@ -92,47 +88,25 @@ public class MapNode implements DataSerializable {
 
     @Override
     public void writeData(ObjectDataOutput odo) throws IOException {
-        odo.writeLong(id);
+        odo.writeObject(id);
         odo.writeUTF(query);
         odo.writeUTF(URI);
         odo.writeLong(queryId);
         odo.writeFloat(hubScore);
         odo.writeFloat(authScore);
-        writeCollection(odo, outgoing);
-        writeCollection(odo, incoming);
-    }
-
-    private void writeCollection(ObjectDataOutput odo, Collection<Long> collection)
-        throws IOException {
-        
-        long[] array = new long[collection.size()];
-        int i = 0;
-        for (long entry: collection) {
-            array[i] = entry;
-            i++;
-        }
-        odo.writeLongArray(array);
+        odo.writeObject(outgoing);
+        odo.writeObject(incoming);
     }
     
     @Override
     public void readData(ObjectDataInput odi) throws IOException {
-        id = odi.readLong();
+        id = odi.readObject();
         query = odi.readUTF();
         URI = odi.readUTF();
         queryId = odi.readLong();
         hubScore = odi.readFloat();
         authScore = odi.readFloat();
-        outgoing = readSet(odi);
-        incoming = readSet(odi);
-    }
-    
-    private Set<Long> readSet(ObjectDataInput odi) throws IOException {
-        Set<Long> retSet = null;
-        long[] array = odi.readLongArray();
-        retSet = new HashSet<>(array.length);
-        for( int i = 0; i < array.length; i++) {
-            retSet.add(array[i]);
-        }
-        return retSet;
+        outgoing = odi.readObject();
+        incoming = odi.readObject();
     }
  }

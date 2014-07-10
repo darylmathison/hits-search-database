@@ -10,17 +10,35 @@ import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.nio.serialization.DataSerializable;
 import java.io.IOException;
+import org.mathison.hits.key.QueryRequestKey;
 
 /**
  *
  * @author Daryl
  */
-public class IncomingQEntry implements DataSerializable {
+public class OutgoingLinksQEntry implements DataSerializable {
     private static final long serialVersionUID = 1L;
+    
+    private QueryRequestKey query;
     private long queryId;
-    private String query;
-    private long nodeId = -1;
+    private long nodeMapEntryKey = -1;
     private String URI;
+    private int level;
+    private int maxLevel;
+    
+    private OutgoingLinksQEntry() {}
+    
+    public OutgoingLinksQEntry(int maxLevel) {
+        this.maxLevel = maxLevel;
+    }
+    
+    public QueryRequestKey getQuery() {
+        return query;
+    }
+
+    public void setQuery(QueryRequestKey query) {
+        this.query = query;
+    }
 
     public long getQueryId() {
         return queryId;
@@ -30,20 +48,12 @@ public class IncomingQEntry implements DataSerializable {
         this.queryId = queryId;
     }
 
-    public String getQuery() {
-        return query;
-    }
-
-    public void setQuery(String query) {
-        this.query = query;
-    }
-
     public long getNodeId() {
-        return nodeId;
+        return nodeMapEntryKey;
     }
 
     public void setNodeId(long nodeId) {
-        this.nodeId = nodeId;
+        this.nodeMapEntryKey = nodeId;
     }
 
     public String getURI() {
@@ -54,20 +64,34 @@ public class IncomingQEntry implements DataSerializable {
         this.URI = URI;
     }
 
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public int getMaxLevel() {
+        return maxLevel;
+    }
+    
     @Override
     public void writeData(ObjectDataOutput odo) throws IOException {
+        odo.writeObject(query);
         odo.writeLong(queryId);
-        odo.writeUTF(query);
-        odo.writeLong(nodeId);
+        odo.writeLong(nodeMapEntryKey);
         odo.writeUTF(URI);
+        odo.writeInt(level);
+        odo.writeInt(maxLevel);
     }
 
     @Override
     public void readData(ObjectDataInput odi) throws IOException {
+        query = odi.readObject();
         queryId = odi.readLong();
-        query = odi.readUTF();
-        nodeId = odi.readLong();
+        nodeMapEntryKey = odi.readLong();
         URI = odi.readUTF();
-    }
-    
+        level = odi.readInt();
+        maxLevel = odi.readInt();    }
 }

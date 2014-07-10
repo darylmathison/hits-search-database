@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.mathison.hits.dto;
 
 import java.io.Serializable;
@@ -20,6 +14,14 @@ public class LinkEntry implements Serializable, Comparable<LinkEntry> {
     private float hubScore;
     private String URI;
 
+    public LinkEntry() {}
+    
+    public LinkEntry(float authScore, float hubScore, String URI) {
+        this.authScore = authScore;
+        this.hubScore = hubScore;
+        this.URI = URI;
+    }
+    
     public float getAuthScore() {
         return authScore;
     }
